@@ -1,0 +1,21 @@
+\section{Discussion and Conclusions} \label{sec:conc}
+
+The vector space model we constructed for information retrieval on the CU website worked quite well! For each of the three queries we ran, the search results that came up were relevant and useful, even in a situation where no perfectly relevant results existed. The SVD rank reduction process did not substantially reduce the algorithm's performance while substantially decreasing execution time. These are the results we expected.
+
+This demonstrates the effectiveness of vector space models for indexing and querying a large corpus of text and of SVD for reducing the term-document matrix's rank and thus search complexity. If desired, this means that our model could be used in new search functionality for the website.
+
+The execution time for querying documents, however, is quite long. At the
+moment, we are still creating the full rank SVD representation of the matrix when we really only need certain values from the decomposition. In the future, we hope to explore more efficient computation methods
+so that we do not need to compute the full SVD and can rather selectively compute the values we need.
+
+In addition, we would like to compare our IR system to other options quantitatively rather than qualitatively. This could be done by
+indexing a competitive querying data set as shown in \cite{kaggledata} and testing the accuracy and speed of our model against other
+top performing methods. 
+
+On top of that, in other vector space models implemented in the literature as seen in 
+\cite{berry99}, terms were given \textit{global} weights across the database in addition to the local frequency-based weights used here. These were useful as they could reduce the impact of terms that appear consistently (i.e., "university" for a university website), thus increasing the relative importance of rarer terms. Consequently, the model developed here could be further improved by adding this global weighting functionality based on the prevalence of different words and limiting the number of terms collected from each document (by focusing on titles and metadata only).
+
+Finally, the CU data set could have been better cleaned. The pages we grabbed contained a substantial amount of noise (headers, navigation bar links, nonsense words, etc.) which reduced the efficacy of searches. Although the model still performed quite well under these circumstances, cleaner data would no doubt increase the search abilities of the model and reduce the complexity of the problem at hand.
+
+%TODO: should we mention data cleaning earlier?
+

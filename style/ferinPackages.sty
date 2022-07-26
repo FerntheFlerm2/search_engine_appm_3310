@@ -1,0 +1,145 @@
+% Ferin Style, Replace Preamble with this
+
+% PACKAGES ---------------------------------------------------------------------------------------
+\usepackage{setspace} % for double spacing (call \double spacing in document)
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{amsmath} % https://tex.stackexchange.com/questions/368353/using-equation-split-how-can-i-ensure-that-only-the-last-equation-is-numbered
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{gensymb}
+\usepackage{pdfpages} 
+\usepackage{float} %for setting figure
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage{graphicx}
+\usepackage[siunitx]{circuitikz}
+\usepackage{tikz}
+%\usepackage{tkz-berge}
+\usetikzlibrary{positioning, automata, backgrounds}
+\usepackage[colorinlistoftodos, color=orange!50]{todonotes}
+\usepackage{hyperref}
+\usepackage[numbers, square]{natbib}
+\usepackage{fancybox}
+\usepackage{epsfig}
+\usepackage{soul}
+\usepackage[framemethod=tikz]{mdframed}
+\usepackage[shortlabels]{enumitem}
+\usepackage[version=4]{mhchem}
+\usepackage{multicol}
+\usepackage{forest}
+\usepackage{mathtools}
+\usepackage{comment}
+\usepackage{enumitem}
+\usepackage{tasks}
+\usepackage[utf8]{inputenc}
+\usepackage{listings}
+\usepackage{color}
+\usepackage[numbers]{natbib}
+\usepackage{subfiles}
+\usepackage{subfig} %for side by side images
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\usepackage{placeins} %added
+\usepackage{varwidth} %center enumeraate
+\usepackage{listings}
+
+
+% Theorems ---------------------------------------------------------------------------------------
+\newtheorem{prop}{Proposition}[section]
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{cor}{Corollary}[prop]
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+
+\theoremstyle{definition}
+\newtheorem{required}{Problem}
+
+\theoremstyle{definition}
+\newtheorem{ex}{Example}
+
+
+% NEW COMMANDS  -----------------------------------------------------------------------------------------------------
+\newcommand{\matr}[1]{\mathbf{#1}}
+\newcommand{\mvec}[1]{\vec{\mathbf{#1}}}
+
+% custom Variables and Operators ----------------------------------------------------------------------------------------------
+\DeclareMathOperator{\sech}{sech}
+\DeclareMathOperator{\mtrSig}{\matr{\Sigma}} %FOR ISVD
+\DeclareMathOperator{\mtrA}{\matr{A}} 
+\DeclareMathOperator{\mtrU}{\matr{U}} 
+\DeclareMathOperator{\mtrV}{\matr{V}} 
+\DeclareMathOperator{\mtrE}{\matr{E}} 
+\DeclareMathOperator{\RR}{\mathbb{R}} 
+\DeclareMathOperator{\mtrSigK}{\matr{\Sigma}_k} %FOR ISVD
+\DeclareMathOperator{\mtrAK}{\matr{A}_k} 
+\DeclareMathOperator{\mtrUK}{\matr{U}_k} 
+\DeclareMathOperator{\mtrVK}{\matr{V}_k} 
+\definecolor{mygreen}{RGB}{28,172,0} % color values Red, Green, Blue
+\definecolor{mylilas}{RGB}{170,55,241}
+\definecolor{deepblue}{rgb}{0,0,0.5}
+\definecolor{deepred}{rgb}{0.6,0,0}
+\definecolor{deepgreen}{rgb}{0,0.5,0}
+
+%PYTHON ----------------------------------------------------------------------
+%wrapping the python https://tex.stackexchange.com/questions/116534/lstlisting-line-wrapping
+\lstset{
+  basicstyle=\ttfamily,
+  columns=fullflexible,
+  frame=single,
+  breaklines=true,
+  postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+}
+
+
+%https://tex.stackexchange.com/questions/83882/how-to-highlight-python-syntax-in-latex-listings-lstinputlistings-command
+\DeclareFixedFont{\ttb}{T1}{txtt}{bx}{n}{10} % for bold
+\DeclareFixedFont{\ttm}{T1}{txtt}{m}{n}{10}  % for normal
+
+\newcommand\pythonstyle{\lstset{
+language=Python,
+basicstyle=\ttm,
+morekeywords={self},              % Add keywords here
+keywordstyle=\ttb\color{deepblue},
+emph={MyClass,__init__},          % Custom highlighting
+emphstyle=\ttb\color{deepred},    % Custom highlighting style
+stringstyle=\color{deepgreen},
+frame=tb,                         % Any extra options here
+showstringspaces=false
+}}
+
+% Python environment
+\lstnewenvironment{python}[1][]
+{
+\pythonstyle
+\lstset{#1}
+}
+{}
+
+% Python for external files
+\newcommand\pythonexternal[2][]{{
+\pythonstyle
+\lstinputlisting[#1]{#2}}}
+
+% Python for inline
+\newcommand\pythoninline[1]{{\pythonstyle\lstinline!#1!}}
+
+
+
+
+% Misc ---------------------------------------------------------------------------------------
+
+\setlength{\marginparwidth}{3.4cm}
+%#########################################################
+
+%To use symbols for footnotes
+\renewcommand*{\thefootnote}{\fnsymbol{footnote}}
+%To change footnotes back to numbers uncomment the following line
+%\renewcommand*{\thefootnote}{\arabic{footnote}}
+
+% Enable this command to adjust line spacing for inline math equations.
+% \everymath{\displaystyle}
+

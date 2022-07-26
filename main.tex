@@ -1,0 +1,80 @@
+%prevent option clash for xcolor and graphix
+\PassOptionsToPackage{usenames,dvipsnames}{xcolor}
+%https://nuanceabounds.org/fix-latex-package-option-clash-error-passoptionstopackage/
+
+\documentclass[12pt]{article} 
+\usepackage{./style/ferinPackages}
+\usepackage{./style/matrixProject}
+
+% TITLE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\makeatletter
+\renewcommand{\maketitle}{\bgroup\setlength{\parindent}{0pt}
+\begin{flushleft}
+  \@author
+  
+  \@date
+  
+  \begin{center}
+  \textbf{\@title}
+  \end{center}
+\end{flushleft}\egroup
+}
+\makeatother
+
+\title{Vector Space Model of Information Retrieval Project}
+\date{July 10, 2022}
+\author{%
+Beckett Hyde, Ferin Von Reich\\
+    APPM 3310 Matrix Methods and Applications\\
+}
+
+
+%COMMANDS BEFORE BEGIN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\doublespacing
+
+%reset subsection and subsubsection reference to section
+\addto\extrasenglish{ 	\renewcommand{\sectionautorefname}{Section} 	\let\subsectionautorefname\sectionautorefname 	\let\subsubsectionautorefname\sectionautorefname }
+
+%BEGIN DOCUMENT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+
+%Intial Stuff %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\maketitle
+\tableofcontents
+\newpage
+
+
+
+%Writing Start %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\input{sections/abstract.tex}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\input{sections/attribution.tex}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\input{sections/introduction.tex}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\input{sections/mathematical_formulation.tex}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\input{sections/examples_and_numeric.tex}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\input{sections/conclusion.tex}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\input{sections/appendix/appendix_main.tex}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\bibliographystyle{plain}
+\bibliography{refs}
+
+
+
+
+
+
+
+\end{document} % NOTHING AFTER THIS LINE IS PART OF THE DOCUMENT
+
+
+
+
+

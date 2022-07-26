@@ -1,0 +1,256 @@
+\section{Examples and Numerical Results}\label{sec:ExamplesAndNumeric}
+
+\subsection{Matrix and Dictionary Generation}\label{subsec:dictionaryGen}
+
+To generate the term-document matrix for a set of documents, we begin by creating two lists in python corresponding to our term list, called \verb|words|, and our list of document URLs, called \verb|documents|. Each index in \verb|words| will correspond to a row in the term-document matrix. Initially, this string will be empty. Each index in \verb|documents| will correspond to a column in the term-document matrix where the document's vector resides.
+
+To generate a vector for each document, the document is scanned, and the frequency of every word contained within it is recorded in a Python dictionary. During this process, all words are stemmed and made lower-case, meaning they are converted to their most generic form. For example, the words "bake" and "baking" would both be converted to the word "bake". For this, we use the \verb|nltk.stem| library in Python. Here, we also filter out any articles like "a" and "the", punctuation, special characters, and contractions, replacing the latter with their expanded form.
+
+Next, a list called \verb|column| is created to hold the vector's components. \verb|words| is looped through, and the dictionary is checked for each term to see if it is in the dictionary. If the term is present, the frequency of the term is appended to \verb|column|, and that term is removed from the document's dictionary. If it is not, a zero is appended (meaning that a particular word is not present in the dictionary). Finally, we check if the dictionary is empty. If it is, all words in the document have already been encountered, and no new dimensions are necessary. If it is not, then new words have been encountered. These new words are appended to \verb|words|, and their frequencies appended to \verb|column| as new components 
+
+This is done for each document. At the end, we have a set of document vector component lists of varying sizes. This is because, for each document with new words, additional components are added to its vector that were not needed for previous vectors. As this is not useful for making a matrix, we append zeros to all document vectors except the last one calculated until they all have the same number of components as that last vector. Thus, all document vectors will have the same dimension. Finally, a matrix \(\mtrA\) is constructed, with the document vector component lists being the columns  The code for this entire process can be found in (\autoref{subsubsec:dictAndMatrixGen}).
+
+As an example, we generated a corpus of five documents with six terms shown in \autoref{table:CodeToySet}. Here, the six dimensions of the vector space correspond to the terms 'cars', 'fast', 'fun', 'crazy', 'monkey', and 'swing', in the order in which they appeared in the corpus.
+
+%TODO: More table formatting.
+\begin{center}
+\begin{table}[h]\label{table:1}
+\begin{tabular}{| l | l | l | l |}
+\hline
+\textbf{Document} & \textbf{Text in Document} & \textbf{Vector Representation} & \textbf{Normalized Representation} \\ \hline
+0        & Cars, Fast, Fun             & \((1, 1, 1, 0, 0, 0)^T\) & \((.5774, .5774, .5774, 0, 0, 0)^T\) \\ \hline
+1        & Cars, Crazy, Monkey         & \((1, 0, 0, 1, 1, 0)^T\) & \((.5774, 0, 0, .5774, .5774, 0)^T\) \\ \hline
+2        & Crazy, Monkey               & \((0, 0, 0, 1, 1, 0)^T\) & \((0, 0, 0, .7071, .7071, 0)^T\) \\ \hline
+3        & Cars, Cars, Fast, Fun       & \((2, 1, 1, 0, 0, 0)^T\) & \((.8165, .4082, .4082, 0, 0, 0)^T\) \\ \hline
+4        & Monkey, Swing, Fun          & \((0, 0, 1, 0, 1, 1)^T\) & \((0, 0, .5774, 0, .5774 .5774)^T\) \\ \hline
+\end{tabular}
+\caption{Toy Data Set for Explanation}
+\label{table:CodeToySet}
+\vspace{-12mm}
+\end{table}
+\end{center}
+
+Following the process above generates the matrix $\mtrA$ as shown in \autoref{eq:matPreSVD}.
+
+\begin{equation}\label{eq:matPreSVD}
+\mtrA=
+    \begin{bmatrix}
+    .5774 & .5774 & 0 & .8165 & 0 \\
+    .5774 & 0 & 0 & .4082 & 0 \\
+    .5774 & 0 & 0 & .4082 & .5774 \\
+    0     & .5774 & .7071 & 0 & 0 \\
+    0     & .5774 & .7071 & 0 & .5774 \\
+    0     & 0 & 0 & 0 & .5774 \\
+    \end{bmatrix}
+\end{equation}
+
+\subsection{Rank Reduction}\label{subsec:rankreduction}
+Unlike this test matrix, the standard database would be much larger. For example, We performed this process on a set of 4381 pages from the CU website, which is described in \autoref{subsec:cuwebsite}, and the matrix had a dimension of $24799\times4381$. In these cases, it is necessary to reduce the complexity of querying to make doing so feasible. We do this by applying Singular Value Decomposition to the matrix as explained in \autoref{subsec:SVD} and, and then using the algorithm in \autoref{subsubsec:validrank} to find the appropriate rank to reduce to. Then we apply the low-rank approximation. 
+
+% TODO: Connect this back to 5.3/5.4 in a way that flows. Also, is this right?
+
+% TODO: a more interesting way of determining the rank of the matrix? From the paper, going to do this?
+
+This is unnecessary in the case of of example data $\mtrA$, but we will reduce the matrix to rank 3 as a demonstration. We first calculate the SVD in the form $\mtrA = \mtrU \mtrSig  \mtrV^T$ using the code in \autoref{subsubsec:codeRankAppx}:
+\begin{equation}\label{eq:matUPreRankReduce}
+\mtrU=
+\begin{bmatrix}
+-.6049 & -.3761 & -.4191 & -.5630 & -.8468 & 0 \\
+-.2967 & -.3799 & -.0677 & .6230 & -.5978 & -.1328 \\
+-.4309 & -.2990 & .5256 & .2715 & .5978 & .1328 \\
+-.3412 & .5141 & -.3851 & .3098 & .0740 & .6079 \\
+-.1341 & .0808 & .5932 & -.3515 & -.5238 & .4750 \\
+\end{bmatrix},
+\end{equation}
+
+\begin{equation}\label{eq:matDPreRankReduce}
+\mtrSig=
+    \begin{bmatrix}
+    1.6077 & 0 & 0 & 0 & 0 \\
+    0 & 1.2465 & 0 & 0 & 0 \\
+    0 & 0 & .8635 & 0 & 0 \\
+    0 & 0 & 0 & .3397 & 0 \\
+    0 & 0 & 0 & 0 & 0 \\
+    \end{bmatrix},
+\end{equation}
+
+\begin{equation}\label{eq:matVtPreRankReduce}
+    \mtrV^T=
+    \begin{bmatrix}
+    -.4785 & -.5104 & -.3591 & -.4919 & -.3736 \\
+    -.4887 & .3395 & .6291 & -.4687 & .1745 \\
+    .0259 & -.3985 & -.1449 & -.1798 & .8873 \\
+    .5633 & -.5011 & .5580 & -.2782 & -.2068 \\
+    -.4629 & -.4629 & .3780 & .6547 & 0 \\
+    \end{bmatrix}.
+\end{equation}
+
+We then calculate the low-rank approximation $\mtrAK$. In this example, we will use $k=3$ to generate the approximation in the form $\mtrAK = \mtrUK \mtrSigK \mtrVK^T$ where $\mtrUK$ contains the first $k$ columns of $\mtrU$, $\mtrVK$ contains the first $k$ columns of $\mtrV$, and $\mtrSig$ is a $k\times k$ diagonal matrix with the $k$ largest singular values of $\mtrA$ (see \autoref{subsubsec:codeRankAppx} for the code which does this).
+
+\begin{equation}\label{eq:matU}
+\mtrUK=
+\begin{bmatrix}
+-.6049 & -.3761 & -.4191 \\
+-.2967 & -.3799 & -.6766 \\
+-.4309 & -.2990 & .5256 \\
+-.3412 & .5141 & -.3851 \\
+-.4754 & .5949 & .2081 \\
+-.1341 & .8081 & .5932 \\
+\end{bmatrix}
+\end{equation}
+
+\begin{equation}\label{eq:matD}
+\mtrSigK=
+    \begin{bmatrix}
+    1.6077 & 0 & 0 \\
+    0 & 1.2465 & 0  \\
+    0 & 0 & .8635 \\
+    \end{bmatrix}
+\end{equation}
+
+\begin{equation}\label{eq:matVt}
+\mtrVK^T=
+    \begin{bmatrix}
+     -.4785 & -.5104 & -.3591 & -.4919 & -.3736 \\
+     -.4887 & .3395 & .6291 & -.4687 & .1745 \\
+     .0259 & -.3985 & -.1449 & -.1798 & .8873 \\
+    \end{bmatrix}
+\end{equation}
+
+This yields the rank-reduced matrix $\mtrAK$.
+
+\begin{equation}\label{eq:matSVD}
+\mtrAK=
+    \begin{bmatrix}
+    .6851 & .4815 & .1067 & .7633 & -.0396 \\
+    .4581 & .1061 & -.1181 & .4671 & .0438 \\ 
+    .5254 & .0462 & -.0515 & .4339 & .5964 \\
+    -.0593 & .6301 & .6484 & .0293 & .0218 \\
+    .0080 &  .5703 & .7150 & -.0039 & .5744 \\
+    .0673 & -.0598 & .0666 & -.0332 & .5527 \\
+    \end{bmatrix}
+\end{equation}
+
+\subsection{Querying the Example Data}\label{subsec:queryingTestData}
+
+We now have the final form of the matrix corresponding to our corpus. To perform a search, we merely take all the terms in a search string, say "monkey", and create a query vector (see \autoref{subsubsec:codeQuery} for the code). We iterate through the query, and for every word which exists in the query string, we place a 1 in the corresponding query vector component, placing zeros everywhere else. For example, the query "monkey" will have the vector representation
+\begin{equation}
+    q = (0, 0, 0, 0, 1, 0)^T. \notag
+\end{equation}
+We then compute the cosine of the angle between the query vector and each one of the document vectors using \autoref{eq:rankCos}, and sort them from least to greatest. A cosine of 1 corresponds to a perfect match (this would mean a parallel vector).
+For example, When the "fun" query is executed, the results are shown in \autoref{table:simpleDataQuery}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{| l | l | l |}
+\hline
+\textbf{Document} & \textbf{Text in Document} & \textbf{Cosine}  \\ \hline
+2        & Crazy, Monkey & 0.7282 \\ \hline
+1 & Cars, Crazy, Monkey & 0.5787 \\ \hline
+4 & Monkey, Swing, Fun & 0.5758 \\ \hline
+0 & Cars, Fast, Fun & 0.0081 \\ \hline
+3 & Cars, Cars, Fast, Fun & -0.0040 \\ \hline
+\end{tabular}
+\caption{The Results of the Query "fun" on the Example Data Set}
+\label{table:simpleDataQuery}
+\vspace{-4mm}
+\end{table}
+
+
+We can see that the three first results with the highest cosine value are the three results containing the search term. These all have cosine values above .5, with the first result having one above .7 as "monkey" is one of only two keywords instead of three, making it more important. Naturally, the two documents without the search term have cosine values near zero. 
+%TODO: add a second search term if more text is needed.
+This is a good proof of concept for our query model.
+
+
+\subsection{The CU Website}\label{subsec:cuwebsite}
+Unlike the example data set, we did not hand make the CU data used. Instead, we had to get that data from the internet. To do this, we first used \verb|sitemap-generator| to generate a sitemap of 4,381 links to pages on the CU website by crawling four layers deep from the homepage \verb|www.colorado.edu| (see \autoref{subsubsec:sitemap}). We then used \verb|scrapy| to get the text from those links
+and saved them in a machine-readable format called JSON, with each link paired with its text (see \autoref{subsubsec:scraper}). Then, using the same techniques outlined above, we calculated a normal vector for each of the documents in the corpus and formed a matrix of dimension $24799\times4381$, with $24,799$ corresponding to the number of unique terms encountered in the corpus.
+
+We then performed SVD on this matrix and used the SVD rank-$k$ approximation technique discussed previously, using rank 400. To determine the rank value of 400, we ran the algorithm outlined in \autoref{subsubsec:validrank} until we hit our bound of 0.4. Again, this is a rather high bound, but it saved us a lot of computation, so we accepted the trade-off. 
+
+%This not only reduced the complexity of calculations, but also reduces the complexity of the column space: the column space of the new matrix is a 400-dimensional subspace of the column space of the original.
+%TODO: cite the above. p 16 in the og paper. Should it be moved somewhere else?
+
+We ran three queries: one for "music innovation", one for "entrepreneurship venture capital", and one for "sports medicine enrollment". The top 10 results are shown in \autoref{table:querymusic}, \autoref{table:queryentrepreneurship}, and \autoref{table:queryenrollment}, respectively. The corresponding URLs to these page titles can be found in \autoref{subsec:tables}.
+
+%TODO table formatting is bad.
+
+
+\begin{table}[h]
+\centering
+\begin{tabular}{| l | l |}
+\hline
+\textbf{Cosine} & \textbf{Page Title} \\ \hline
+.5072        & Facilities - College of Music \\ \hline
+.5044        & About Us - College of Music \\ \hline
+.5032        & Giving News - College of Music \\ \hline
+.4915        & Summer Session - College of Music \\ \hline
+.4908        & Bachelor of Arts in Music \\ \hline
+.4749        & Expanded Imig Building - College of Music \\ \hline
+.4729        & Composition news - Page 6 - College of Music \\ \hline
+.4719        & Noteworthy - College of Music \\ \hline
+.4643        & College of Music \\ \hline
+.4640        & Minor in Music \\ \hline
+
+\end{tabular}
+\caption{The Results of the Query "music innovation" on the CU Web Data}
+\label{table:querymusic}
+\vspace{-4mm}
+\end{table}
+
+
+When searching for "music innovation", we can see the most common results are those from the College of Music. This is likely because the vast majority of mentions of the term "music" come from the College of Music. The term "innovation", however, is more general, so can appear on the website for any college or any subject that is engaged in "innovation". Thus, the documents whose vectors are most closely aligned with the query vector must all be from the College of Music. These results make sense and demonstrate the efficacy of our model.
+
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|p{0.1\linewidth} | p{0.75\linewidth}|}
+\hline
+\textbf{Cosine}  & \textbf{Page Title} \\ \hline
+.2653        & New Venture Challenge powers campus entrepreneurship \\ \hline
+.2608        & About - Innovation \& Entrepreneurship \\ \hline
+.2593        & Groundbreaking CU Boulder innovators awarded \$1.5 million in grants at Lab Venture Challenge finals - Venture Partners at CU Boulder \\ \hline
+.2585        & Innovation \& Entrepreneurship \\ \hline
+.2379        & Entrepreneurial Programs - Innovation \& Entrepreneurship \\ \hline
+.2241        & Faculty \& Research Staff - Innovation \& Entrepreneurship \\ \hline
+.2170        & Upcoming Entrepreneurial Events - Innovation \& Entrepreneurship \\ \hline
+.2155        & Funding awarded to top student female founders at women's prize night - New Venture Challenge \\ \hline
+.2142        & CU Boulder inventions transformed to meet market needs after commercialization program - Venture Partners at CU Boulder \\ \hline
+.2141        & Innovation \& Entrepreneurship Faculty \& Staff Resources - Innovation \& Entrepreneurship \\ \hline
+\end{tabular}
+\caption{The Results of the Query "entrepreneurship venture capital" on the CU Web Data}
+\label{table:queryentrepreneurship}
+%\vspace{-4mm}
+\end{table}
+
+
+When searching for "entrepreneurship venture capital", the results are very topical. The top results all come from pages that explicitly have to do with innovation, entrepreneurship, and venture capital--the first, third, eighth, and ninth--or have to do with both innovation and entrepreneurship. Lots of results are also from the Innovation \& Entrepreneurship section of the CU website, which is exactly what you would want in a search engine. Although the cosine scores are lower than for "music innovation", the results are still relevant, meaning the high cosine scores in that query likely came from the repetition of the word "music".
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|p{0.1\linewidth} | p{0.75\linewidth}|}
+\hline
+\textbf{Cosine} & \textbf{Page Title} \\ \hline
+.2998        & Certificate in Critical Sport Studies \\ \hline
+.1965        & Minor in Sports Media \\ \hline
+.1870        & EXPERTS: Tokyo Olympic Games - CU Boulder Today \\ \hline
+.1795        & Recreation Services \\ \hline
+.1663        & Winter Olympics and CU Boulder Olympians - CU Boulder Today \\ \hline
+.1587        & Bachelor of Arts in Integrative Physiology \\ \hline
+.1472        & With 20k award, undergrad advances inclusion in sports - Colorado Arts and Sciences Magazine \\ \hline
+.1424        & Equipment - Recreation Services \\ \hline
+.1304        & Register for Classes - Office of the Registrar \\ \hline
+.1260        & Athletics - Page 9 - CU Boulder Today \\ \hline
+\end{tabular}
+\caption{The Results of the Query "sports medicine enrollment" on the CU Web Data}
+\label{table:queryenrollment}
+%\vspace{-4mm}
+\end{table}
+
+Finally, when searching for "sports medicine enrollment", as there is no specific "sports medicine" program on campus, the cosine scores are the lowest for this query. However, the results get close. Three results have to do with sports-related programs, two results have to do with athletic competitions, and the rest are related to athletics or enrollment in some other way. Even though this query could not turn up something specifically accurate by design, it got extremely close. This proves the efficacy of our model even in non-ideal situations.
+
+
+
+
+
+

@@ -1,0 +1,22 @@
+\section{Introduction} \label{sec:intro}
+
+Information Retrieval from a large corpus of text is a persistent problem in modern computing. We have access to more useful information
+today than at any other point in history. Having efficient means for accessing this information is essential.
+
+Information retrieval systems are used to search through libraries of books or papers, web pages, and even the entire publicly accessible internet through search engines like Google. One relevant application of this technology is the construction of a search algorithm for the University of Colorado-Boulder website.
+
+The website is a vast corpus of text written by a large number of people. It has a large number of links, a vast and unspecific target audience, and is organized in a nonstandard way, making it very difficult to find important and relevant information. Building an effective indexing and search algorithm will make it easier for students and faculty to find important information quickly. Countless deadlines have been missed, opportunities neglected, and bills left unpaid simply because the relevant web page was tucked away in an obscure corner of the system. A superior search algorithm will make this less likely.
+
+To address this, we will implement a vector space model to index and search the University of Colorado-Boulder's website, using \cite{berry99}. We have two goals. First, we want to produce relevant results for our queries, which is the search pattern for which we return documents. Second, we wish to reduce the computational intensity in generating our model and performing queries since we must run this model on personal laptops. Special care will be taken to reduce the amount of matrix multiplication needed (or at the least the size of the matrices) as that is known to be quite expensive. 
+
+As an overview, we will first explain the mathematical background behind the vector space model for information retrieval (IR). Then, we will explain the mathematical basis upon which we will reduce the computational requirements for our system. After this, we will demonstrate the IR process on a toy data set, walking through each step in the process from data input to result. Then, we will show three test queries on the corpus gathered from the University of Colorado-Boulder's website and qualitatively examine the results. Finally, we will discuss the efficacy of our model and suggest paths for further research and optimization.
+
+
+
+% A vector space model is a model where each document in a corpus of text is assigned a vector of some dimension based on the contents of the document. Here, we use the the number of times certain words appear in the document as our heuristic for a document's semantic meaning, so documents that use similar words will have "similar" semantic meaning vectors. We create an $n$-dimensional euclidean-like space where each dimension corresponds to a unique term, and thus each "region" in the space corresponds to a particular meaning, or the intersection of different terms' meanings.
+
+% The properties of this vector space allow us to quickly and easily determine the semantic similarity between documents in a quantitative way. It also allows us to determine those documents which are closest in semantic meaning to a particular query, which is itself assigned a semantic meaning vector, thus creating a word-frequency-based search engine scalable to an arbitrarily large corpus of arbitrary term complexity. In the next section we will describe this more thoroughly. 
+
+%  We then execute three test queries on the corpus and qualitatively examine the results.
+
+
